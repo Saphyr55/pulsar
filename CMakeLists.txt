@@ -5,7 +5,12 @@ cmake_minimum_required(VERSION 3.26)
 # ===================================================================================================
 project(pulsar LANGUAGES CXX)
 
-set(PULSAR_TEST_ENABLE ON)
+option(PULSAR_TEST_ENABLE "Enable test." ON)
+
+if(PULSAR_TEST_ENABLE)
+    include(CTest)
+    enable_testing()
+endif()
 
 # Use folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -26,5 +31,6 @@ add_subdirectory(runtime)
 add_subdirectory(platform)
 add_subdirectory(samples/01_demo)
 add_subdirectory(samples/serializer_demo)
+add_subdirectory(third_party)
 
-
+add_subdirectory(tests)
