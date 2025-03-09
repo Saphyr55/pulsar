@@ -1,0 +1,17 @@
+# Build
+build/
+out/
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Clangd
+.clangd
+.cache/
+
+# Python virtual environment
+.venv
