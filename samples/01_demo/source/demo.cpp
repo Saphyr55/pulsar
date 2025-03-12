@@ -10,8 +10,7 @@
 #include <io/file_handle.hpp>
 #include <io/file_system.hpp>
 #include <module/module.hpp>
-
-#include <unordered_map>
+#include <module/module_registry.hpp>
 
 using namespace pulsar;
 
@@ -28,3 +27,4 @@ public:
     virtual ~DemoModule() override {}
 };
 
+PULSAR_ADD_MODULE("DemoModule", DemoModule)

@@ -1,9 +1,12 @@
 #include "memory/memory.hpp"
-#include "memory/memory_trace.hpp"
+#include "defines.hpp"
 #include "io/console.hpp"
+#include "memory/memory_trace.hpp"
 
-#include <cstring>
+
 #include <cstdlib>
+#include <cstring>
+
 
 namespace pulsar {
 
@@ -18,8 +21,9 @@ void Memory::Free(void* block, size_t size) {
 }
 
 void* Memory::Copy(void* destination,
-                 const void* source,
-                 size_t size) {
+                   const void* source,
+                   size_t size) {
+    PCHECK(destination && source)
     return memcpy(destination, source, size);
 }
 

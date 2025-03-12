@@ -43,6 +43,64 @@ public:
     using ElementType = HashMapElement<KeyType, ValueType>;
     using EntryType = HashMapEntry<KeyType, ValueType>;
 
+public:
+
+    class Iterator {
+    public:
+        EntryType& operator*() {
+            return current_->entry;
+        }
+
+        const EntryType& operator*() const {
+            return current_->entry;
+        }
+
+        EntryType* operator->() {
+            return current_->entry;
+        }
+
+        const EntryType* operator->() const {
+            return current_->entry;
+        }
+
+        Iterator& operator++() {
+            if (current_ != nullptr) {
+                current_ = current_->next;
+                if (current_ == nullptr) {
+                    Next();
+                }
+            }
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return current_ != other.current_;
+        }
+
+        Iterator(HashMap<KeyType, ValueType>& map, size_t i, ElementType* element)
+            : map_(map)
+            , index_(i)
+            , current_(element) {
+            if (current_ == nullptr) {
+                Next();
+            }
+        }
+
+    private:
+        void Next() {
+            while (current_ == nullptr && index_ < map_.capacity_ - 1) {
+                ++index_;
+                current_ = map_.elements_[index_];
+            }
+        }
+
+    private:
+        HashMap<KeyType, ValueType>& map_;
+        ElementType* current_;
+        size_t index_;
+    };
+
+public:
     uint32_t Hash(const KeyType& key) const {
         return Hasher::hash<KeyType>(key) % capacity_;
     }
@@ -197,7 +255,7 @@ public:
             Memory::Free(elements_, capacity_ * sizeof(ElementType*));
         }
     }
-    
+
     HashMap& operator=(const HashMap& other) {
         if (this != &other) {
             Clear();
@@ -210,7 +268,7 @@ public:
         return *this;
     }
 
-	const ValueType& operator[](const KeyType& key) const {
+    const ValueType& operator[](const KeyType& key) const {
         return Get(key);
     }
 
@@ -226,12 +284,29 @@ public:
         return element->entry.value;
     }
 
+public:
+    Iterator begin() {
+        return Iterator(*this, 0, elements_[0]);
+    }
+
+    Iterator end() {
+        return Iterator(*this, capacity_ - 1, nullptr);
+    }
+
+    const Iterator cbegin() {
+        return Iterator(*this, 0, elements_[0]);
+    }
+
+    const Iterator cend() {
+        return Iterator(*this, capacity_ - 1, nullptr);
+    }
+
 private:
     ElementType* Lookup(uint32_t index, const KeyType& key) const {
         ElementType* element = elements_[index];
 
         while (element != nullptr) {
-            if (element->entry.key == key) { // TODO: Use a comparator.
+            if (element->entry.key == key) {  // TODO: Use a comparator.
                 return element;
             }
             element = element->next;
@@ -272,7 +347,7 @@ private:
             ElementType* current = allocator_.Allocate(1);
             Memory::Copy(current, other_elements[i], sizeof(ElementType));
             while (current != nullptr) {
-                Insert(current->key, current->value);
+                Insert(current->entry.key, current->entry.value);
                 current = current->next;
             }
         }
