@@ -15,8 +15,8 @@ public:
         : data_(str)
         , size_(Strlen(str)) {}
 
-    constexpr StringRefBase(const String& str)
-        : data_(str.c_str())
+    constexpr StringRefBase(const String& str) requires std::same_as<CharType, char>
+        : data_(str.Data())
         , size_(str.Size()) {}
 
     constexpr StringRefBase(const StringRefBase& other) = default;
@@ -37,7 +37,7 @@ public:
     constexpr bool IsEmpty() const { return size_ == 0; }
 
     constexpr bool operator==(const StringRefBase& other) const {
-        return size_ == other.size_ && MemoryCopy(data_, other.data_, size_) == 0;
+        return size_ == other.size_ && Strcmp(data_, other.data_) == 0;
     }
 
     constexpr bool operator==(const CharType* str) const {
@@ -53,3 +53,10 @@ using StringRef = StringRefBase<char>;
 using WStringRef = StringRefBase<wchar_t>;
 
 }  // namespace pulsar
+
+template <>
+struct PULSAR_CORE_API ::std::hash<::pulsar::StringRef> {
+    size_t operator()(const ::pulsar::StringRef& s) const noexcept {
+        return ::std::hash<const char*>{}(s.Data());
+    }
+};

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstdio>
 
 using u8 = uint8_t;
 using u16 = uint16_t;
@@ -15,15 +16,15 @@ using s64 = int64_t;
 using f32 = float;
 using f64 = double;
 
+
 /**
- * @brief Defines PDEBUG on debugging.
+ * Defines PDEBUG on debugging.
  */
 #if defined(_DEBUG) || defined(DEBUG)
-#define PDEBUG
+#define PULSAR_IS_DEBUG
 #endif
 
 /**
- * @brief
  *
  */
 #if defined(_MSC_VER)
@@ -33,10 +34,9 @@ using f64 = double;
 #endif
 
 /**
- * @brief
  *
  */
-#ifdef PDEBUG
+#ifdef PULSAR_IS_DEBUG
 #define PCHECK(expr)   \
     if (!(expr)) {     \
         PDEBUGBREAK(); \
@@ -46,7 +46,20 @@ using f64 = double;
 #endif
 
 /**
- * @brief
+ *
+ */
+// TODO: Remove printf() ...
+#ifdef PULSAR_IS_DEBUG
+#define PCHECK_MSG(expr, msg) \
+    if (!(expr)) {            \
+        ::printf("%s", msg);  \
+        PDEBUGBREAK();        \
+    }
+#else
+#define PCHECK_MSG(expr, msg)
+#endif
+
+/**
  *
  */
 #if defined(__clang__) || defined(__gcc__)
@@ -60,3 +73,4 @@ using f64 = double;
 #define PNOINLINE
 #endif
 
+#define PDEPRECATED(version, msg)

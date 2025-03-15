@@ -1,6 +1,5 @@
 #include "memory/memory.hpp"
 #include "defines.hpp"
-#include "io/console.hpp"
 #include "memory/memory_trace.hpp"
 
 #include <cstdlib>
@@ -10,12 +9,13 @@ namespace pulsar {
 
 void* Memory::Allocate(size_t size) {
     MemoryTrace::GlobalAddAllocateBytes(size);
-    return malloc(size);
+    return ::malloc(size);
 }
 
 void Memory::Free(void* block, size_t size) {
+    PCHECK_MSG(block, "Attempt to free a null pointer.");
     MemoryTrace::GlobalAddFreedBytes(size);
-    free(block);
+    ::free(block);
 }
 
 void* Memory::Copy(void* destination,
@@ -52,6 +52,3 @@ void* operator new(size_t size, void* (*alloc)(size_t size)) {
     return alloc(size);
 }
 
-void operator delete(void* resource, size_t size) {
-    ::pf::Memory::Free(resource, size);
-}

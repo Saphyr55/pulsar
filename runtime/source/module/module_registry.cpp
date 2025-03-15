@@ -15,8 +15,8 @@ ModuleRegistry::~ModuleRegistry() {
     }
 }
 
-void ModuleRegistry::AddModule(StringRef module_name, Module* module) {
-    modules_.Insert(module_name.Data(), module);
+void ModuleRegistry::AddModule(const StringRef module_name, Module* module) {
+    modules_.Insert(module_name, module);
 }
 
 

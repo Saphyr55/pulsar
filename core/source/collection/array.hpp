@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core_exports.hpp"
 #include "defines.hpp"
 #include "memory/allocator.hpp"
 

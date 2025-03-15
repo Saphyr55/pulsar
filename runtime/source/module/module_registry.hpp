@@ -10,7 +10,7 @@ namespace pulsar {
 
 class PULSAR_RUNTIME_API ModuleRegistry {
 public:
-    using Registry = HashMap<String, Module*>;
+    using Registry = HashMap<StringRef, Module*>;
     using Entry = Registry::EntryType;
 
 public:

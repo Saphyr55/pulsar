@@ -1,16 +1,17 @@
 #pragma once
 
+#include <concepts>
 #include <cstddef>
+#include <iterator>
 
 #include "core_exports.hpp"
 #include "defines.hpp"
 
 namespace pulsar {
 
-template <std::integral TInteger = int>
+template <std::integral IntegerType = int>
 class PULSAR_CORE_API IndexRange {
  public:
-  using IntegerType = TInteger;
 
   class Iterator {
    public:
@@ -22,7 +23,7 @@ class PULSAR_CORE_API IndexRange {
 
     constexpr explicit Iterator(IntegerType index) : index_(index) {}
 
-    constexpr TInteger operator*() const { return index_; }
+    constexpr IntegerType operator*() const { return index_; }
 
     constexpr Iterator& operator++() {
       ++index_;
@@ -44,7 +45,7 @@ class PULSAR_CORE_API IndexRange {
     }
 
    private:
-    TInteger index_;
+    IntegerType index_;
   };
 
   constexpr IndexRange(IntegerType start, IntegerType end)

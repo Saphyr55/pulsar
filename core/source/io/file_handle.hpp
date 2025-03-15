@@ -5,7 +5,7 @@
 
 namespace pulsar {
 
-class FileHandle {
+class PULSAR_CORE_API FileHandle {
 public:
     virtual s64 Tell() = 0;
 

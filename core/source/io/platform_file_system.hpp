@@ -4,7 +4,7 @@
 
 namespace pulsar {  
 
-class PlatformFileSystem : public FileSystem {
+class PULSAR_CORE_API PlatformFileSystem : public FileSystem {
 public:
     virtual bool FileExists(StringRef filepath) const override;
 

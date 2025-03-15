@@ -1,8 +1,8 @@
 #include "engine/engine.hpp"
-#include "collection/hash_map.hpp"
+#include "display/display.hpp"
 #include "module/module.hpp"
 #include "module/module_registry.hpp"
-#include "string/string_ref.hpp"
+#include "object/object.hpp"
 
 namespace pulsar {
 
@@ -23,7 +23,18 @@ bool Engine::Shutdown() {
     return true;
 }
 
+bool Engine::IsRunning() const {
+    return running_;
+}
+
+void Engine::Tick() {
+    Display::Get().PumpsEvents();
+
+    ObjectRegistry::Get().Tick();
+}
+
 bool Engine::Init() {
+
     ModuleRegistry& registry = ModuleRegistry::Get();
 
     for (ModuleRegistry::Entry& entry : registry.GetModules()) {

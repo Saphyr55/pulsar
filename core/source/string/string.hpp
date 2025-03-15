@@ -1,83 +1,101 @@
 #pragma once
 
+#include "collection/array.hpp"
 #include "core_exports.hpp"
-#include "defines.hpp"
-#include "memory/allocator.hpp"
-#include "memory/memory.hpp"
-
-#include <cstdarg>
-#include <cstddef>
-#include <cstdio>
-#include <cstring>
 
 namespace pulsar {
 
-inline size_t Strlen(const char* cstr);
-
-inline errno_t Strcpy(char* dst, size_t bytesSize, const char* src);
-
-inline errno_t Strcat(char* dst, size_t bytesSize, const char* src);
-
-inline int Strcmp(const char* str1, const char* str2);
+PULSAR_CORE_API size_t Strlen(const char* str);
+PULSAR_CORE_API errno_t Strcpy(char* dst, size_t bytes_size, const char* src);
+PULSAR_CORE_API errno_t Strcat(char* dst, size_t bytes_size, const char* src);
+PULSAR_CORE_API int Strcmp(const char* str1, const char* str2);
 
 class PULSAR_CORE_API String {
 public:
-    inline size_t Size() const {
-        return size_;
+    size_t Size() const {
+        return buffer_.Size();
     }
 
-    inline bool IsEmpty() const {
-        return size_ == 0;
+    size_t GetCapacity() const {
+        return buffer_.GetCapacity();
     }
 
-    bool operator==(const String& str) const {
-        return size_ == str.size_ && Memory::Compare(data_, str.data_, size_) == 0;
-    }
-
-    bool operator!=(const String& str) const {
-        return !(*this == str);
-    }
-
-    String operator+(const String& str) const {
-        return Concat(str);
-    }
-
-    String& operator+=(const String& str) {
-        *this = Concat(str);
+    String& Append(const char* str) {
+        size_t size = Strlen(str);
+        buffer_.Pop();
+        for (int i = 0; i < size; i++) {
+            buffer_.Add(str[i]);
+        }
+        buffer_.Add('\0');
         return *this;
     }
 
-    String& operator+=(const char* str) {
-        *this = Concat(String(str));
+    String& Append(const String& str) {
+        Append(str.Data());
         return *this;
     }
 
-    inline operator const char*() {
-        return data_;
+    const char* Data() const {
+        return buffer_.Data();
     }
 
-    inline const char* c_str() const {
-        return data_;
+    char* Data() {
+        return buffer_.Data();
     }
-    
+
+    void Clear() {
+        buffer_.Clear();
+    }
+
+    void Reverse(size_t capacity) {
+        buffer_.Reverse(capacity);
+    }
+
 public:
-    String();
-    String(const char* str);
-    String(const String& other);
-    ~String();
+    String()
+        : buffer_() {
+        buffer_.Add('\0');
+    }
 
-    String& operator=(const String& other);
+    explicit String(size_t capacity)
+        : buffer_(capacity) {
+        PCHECK(capacity != 0)
+        buffer_.Add('\0');
+    }
+
+    String(const char* str)
+        : buffer_(Strlen(str) + 1) {
+        Append(str);
+    }
+
+    String(const String& other)
+        : buffer_(other.buffer_) {}
+
+    String& operator=(const String& other) {
+        if (this != std::addressof(other)) {
+            buffer_ = other.buffer_;
+        }
+        return *this;
+    }
+
+    ~String() {}
+
+protected:
+    void EnsureCapacity(size_t required_capacity) {
+        if (required_capacity > buffer_.GetCapacity()) {
+            Reverse(required_capacity);
+        }
+    }
 
 private:
-    String Concat(const String& str) const;
-
-    void CopyString(const char* str, size_t len);
-
-private:
-    char* data_;
-    size_t size_;
+    Array<char> buffer_;
 };
 
-}  // namespace pulsar
+}  //namespace pulsar
 
-#include "string.inl"
+template <>
+struct PULSAR_CORE_API ::std::hash<::pulsar::String> {
+    size_t operator()(const ::pulsar::String& s) const noexcept {
+        return ::std::hash<const char*>{}(s.Data());
+    }
+};

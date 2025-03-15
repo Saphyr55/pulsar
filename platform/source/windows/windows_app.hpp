@@ -1,32 +1,24 @@
 #pragma once
 #ifdef _WIN32
 
-#include "defines.hpp"
 #include <Windows.h>
+#include "defines.hpp"
 
 namespace pulsar {
 
-constexpr char AppClassName[] = "Pulsar Engine";
-
 struct WindowsAppContext {
-    
-    WindowsAppContext(HINSTANCE in_hinstance, int32_t in_ncmd) 
+    WindowsAppContext(HINSTANCE in_hinstance, int32_t in_ncmd)
         : hinstance(in_hinstance)
-        , ncmd(in_ncmd) { } 
+        , ncmd(in_ncmd) {}
 
     HINSTANCE hinstance;
-    HWND hwnd;
-    WNDCLASSEX wc;
     int32_t ncmd;
 };
 
-bool WindowsAppContextInitClass(WindowsAppContext* out_context);
+inline constexpr const char g_class_name[] = "Pulsar Engine";
+inline WindowsAppContext* g_windows_app_context = nullptr;
 
-bool WindowsAppContextInitWindow(const char* title, WindowsAppContext* out_context);
 
-void WindowsAppContextShowWindow(const WindowsAppContext* context);
-
-void WindowsAppContextRunMessageLoop(const WindowsAppContext* context);
 
 }  //namespace pulsar
 

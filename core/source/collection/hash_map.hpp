@@ -1,6 +1,5 @@
 #pragma once
 
-#include "collection/array.hpp"
 #include "defines.hpp"
 #include "hash/hasher.hpp"
 #include "memory/allocator.hpp"
@@ -129,11 +128,11 @@ public:
         }
     }
 
-    ElementType* Insert(const KeyType& key, const ValueType& value) {
+    EntryType& Insert(const KeyType& key, const ValueType& value) {
         if (size_ >= capacity_) {
             ResizeRehash(capacity_ * 2);
         }
-
+        
         uint32_t index = Hash(key);
 
         ElementType* old_element = elements_[index];
@@ -142,7 +141,7 @@ public:
         while (current != nullptr) {
             if (current->entry.key == key) {  // TODO: Use a comparator.
                 current->entry.value = value;
-                return old_element;
+                return old_element->entry;
             }
             current = current->next;
         }
@@ -152,7 +151,7 @@ public:
         elements_[index] = new_element;
         size_++;
 
-        return new_element;
+        return new_element->entry;
     }
 
     bool Contains(const KeyType& key) const {
@@ -276,9 +275,13 @@ public:
         uint32_t index = Hash(key);
 
         ElementType* element = Lookup(index, key);
+        PCHECK(element)
         if (element == nullptr) {
-            element = Insert(key, ValueType());
-            return element->entry.value;
+            if constexpr (std::is_default_constructible_v<ValueType>) {
+                return Insert(key, ValueType()).value;
+            } else {
+                PCHECK_MSG(false, "No default construstor found.");
+            }
         }
 
         return element->entry.value;
@@ -363,7 +366,6 @@ private:
     }
 
 private:
-    uint32_t* hashes_{};
     ElementType** elements_;
     AllocatorType allocator_;
     size_t size_{};

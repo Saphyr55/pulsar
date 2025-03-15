@@ -1,5 +1,4 @@
 #include "io/platform_file_handle.hpp"
-#include "io/console.hpp"
 
 namespace pulsar {
 

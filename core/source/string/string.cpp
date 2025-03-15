@@ -1,48 +1,25 @@
 #include "string/string.hpp"
 
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
+
 namespace pulsar {
 
-String::String()
-    : data_(nullptr), size_(0) {
-    CopyString("", 0);
+size_t Strlen(const char* cstr) {
+    return strlen(cstr);
 }
 
-String::String(const char* str) {
-    PCHECK(str)
-    size_ = Strlen(str);
-    CopyString(str, size_);
+errno_t Strcpy(char* dst, size_t bytes_size, const char* src) {
+    return strcpy_s(dst, bytes_size, src);
 }
 
-String::String(const String& other) {
-    CopyString(other.data_, other.size_);
+errno_t Strcat(char* dst, size_t bytes_size, const char* src) {
+    return strcat_s(dst, bytes_size, src);
 }
 
-String::~String() {
-    DeleteArray(data_);
-}
-
-String& String::operator=(const String& other) {
-    if (this != &other) {
-        DeleteArray(data_);
-        CopyString(other.data_, other.size_);
-    }
-    return *this;
-}
-
-String String::Concat(const String& str) const {
-    size_t new_length = size_ + str.size_;
-    char new_data[new_length + 1];
-    Memory::Copy(new_data, data_, size_);
-    Memory::Copy(new_data + size_, str.data_, str.size_);
-    new_data[new_length + 1] = '\0';
-    return String(new_data);
-}
-
-void String::CopyString(const char* str, size_t len) {
-    data_ = NewArray<char>(len + 1);
-    Memory::Copy(data_, str, len);
-    data_[len] = '\0';
-    size_ = len;
+int Strcmp(const char* str1, const char* str2) {
+    return strcmp(str1, str2);
 }
 
 }  //namespace pulsar

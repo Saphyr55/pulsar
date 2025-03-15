@@ -1,5 +1,7 @@
 #pragma once
 
+#include <concepts>
+#include "core_exports.hpp"
 #include "memory/reference_counter.hpp"
 
 namespace pulsar {
@@ -52,36 +54,35 @@ public:
     explicit operator bool() const { return IsValid(); }
 
     explicit SharedRef(ResourceType* resource)
-        : resource_(resource),
-          reference_counter_(NewDefaultReferenceCounter<ResourceType>(resource_)) {
+        : resource_(resource)
+        , reference_counter_(NewDefaultReferenceCounter<ResourceType>(resource_)) {
     }
 
     template <typename DerivedType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
+        requires std::derived_from<DerivedType, ResourceType>
     explicit SharedRef(DerivedType* resource)
-        : resource_(resource),
-          reference_counter_(NewDefaultReferenceCounter<DerivedType>(resource)) {}
+        : resource_(resource)
+        , reference_counter_(NewDefaultReferenceCounter<DerivedType>(resource)) {}
 
     template <typename DerivedType, typename DeleterType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
+        requires std::derived_from<DerivedType, ResourceType>
     SharedRef(DerivedType* resource, DeleterType&& deleter)
-        : resource_(resource),
-          reference_counter_(
-              NewReferenceCounterWithDeleter<DerivedType, DeleterType>(resource,
-                                                                       deleter)) {
+        : resource_(resource)
+        , reference_counter_(NewReferenceCounterWithDeleter<DerivedType, DeleterType>(resource, deleter)) {
     }
 
     template <typename DerivedType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
+        requires std::derived_from<DerivedType, ResourceType>
     explicit SharedRef(const SharedRef<DerivedType>& other)
-        : resource_(other.resource_), reference_counter_(other.reference_counter_) {
+        : resource_(other.resource_)
+        , reference_counter_(other.reference_counter_) {
         if (reference_counter_) {
             reference_counter_->AddSharedReference();
         }
     }
 
     template <typename DerivedType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
+        requires std::derived_from<DerivedType, ResourceType>
     SharedRef& operator=(const SharedRef<DerivedType>& other) {
         if (this != &other) {
             Release();
@@ -97,24 +98,22 @@ public:
     }
 
     template <typename DerivedType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
-    SharedRef(SharedRef<DerivedType>&& other) noexcept
-        : resource_(other.resource_), reference_counter_(other.reference_counter_) {
+        requires std::derived_from<DerivedType, ResourceType>
+    SharedRef(SharedRef<DerivedType>&& other)
+        : resource_(other.resource_)
+        , reference_counter_(other.reference_counter_) {
         other.resource_ = nullptr;
         other.reference_counter_ = nullptr;
     }
 
     template <typename DerivedType>
-        requires(std::is_convertible_v<DerivedType*, ResourceType*>)
-    SharedRef& operator=(SharedRef<DerivedType>&& other) noexcept {
-        if (this != &other) {
-            Release();
+        requires std::derived_from<DerivedType, ResourceType>
+    SharedRef& operator=(SharedRef<DerivedType>&& other) {
+        resource_ = other.resource_;
+        reference_counter_ = other.reference_counter_;
 
-            resource_ = other.resource_;
-            reference_counter_ = other.reference_counter_;
-            other.resource_ = nullptr;
-            other.reference_counter_ = nullptr;
-        }
+        other.resource_ = nullptr;
+        other.reference_counter_ = nullptr;
         return *this;
     }
 
@@ -132,8 +131,8 @@ private:
     }
 
 private:
-    ResourceType* resource_;
-    ReferenceCounter* reference_counter_;
+    ResourceType* resource_ = nullptr;
+    ReferenceCounter* reference_counter_ = nullptr;
 };
 
 template <typename ResourceType, typename... Args>
@@ -142,3 +141,10 @@ PINLINE SharedRef<ResourceType> MakeSharedRef(Args&&... args) {
 }
 
 }  // namespace pulsar
+
+template <typename ResourceType>
+struct ::std::hash<::pulsar::SharedRef<ResourceType>> {
+    size_t operator()(const ::pulsar::SharedRef<ResourceType>& ref) const {
+        return ::std::hash<ResourceType*>()(ref.GetResource());
+    }
+};

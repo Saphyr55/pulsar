@@ -1,10 +1,11 @@
 #pragma once
 
+#include "core_exports.hpp"
 #include "defines.hpp"
 
 namespace pulsar {
 
-class MemoryTrace {
+class PULSAR_CORE_API MemoryTrace {
 public:
 
     static void GlobalAddFreedBytes(u64 size);
