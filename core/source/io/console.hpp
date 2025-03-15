@@ -1,22 +1,22 @@
 #pragma once
 
-#include "defines.hpp"
-#include "core_exports.hpp"
+#include "string/format.hpp"
 #include "string/string_ref.hpp"
 
 #include <cstdio>
 
 namespace pulsar {
 
-class PULSAR_CORE_API Console {
-public:
-    static inline void WriteLine(const StringRef message) { Writef("%s\n", message.Data()); }
+inline void Printf(const StringRef format, auto&&... args) {
+    ::printf("%s", VFormat(format, args...).c_str());
+}
 
-    static inline void Write(const StringRef message) { Writef(message); }
+inline void PrintLine(const StringRef message) {
+    Printf("%s\n", message.Data());
+}
 
-    static inline void Writef(const StringRef format, auto&&... args) {
-        printf(format, std::forward<decltype(args)>(args)...);
-    }
-};
+inline void Print(const StringRef message) {
+    Printf("%s", message.Data());
+}
 
 }  // namespace pulsar

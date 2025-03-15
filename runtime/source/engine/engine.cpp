@@ -11,10 +11,6 @@ Engine& Engine::Get() {
     return engine;
 }
 
-bool Engine::Run() {
-    return true;
-}
-
 bool Engine::Shutdown() {
     ModuleRegistry& registry = ModuleRegistry::Get();
 
@@ -27,7 +23,7 @@ bool Engine::Shutdown() {
     return true;
 }
 
-bool Engine::Startup() {
+bool Engine::Init() {
     ModuleRegistry& registry = ModuleRegistry::Get();
 
     for (ModuleRegistry::Entry& entry : registry.GetModules()) {

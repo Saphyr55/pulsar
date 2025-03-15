@@ -3,10 +3,8 @@
 #include "io/console.hpp"
 #include "memory/memory_trace.hpp"
 
-
 #include <cstdlib>
 #include <cstring>
-
 
 namespace pulsar {
 
@@ -27,8 +25,19 @@ void* Memory::Copy(void* destination,
     return memcpy(destination, source, size);
 }
 
+void* Memory::CopyMove(void* destination,
+                   const void* source,
+                   size_t size) {
+    PCHECK(destination && source)
+    return memmove(destination, source, size);
+}
+
 void* Memory::Write(void* destination, int32_t value, size_t size) {
     return memset(destination, value, size);
+}
+
+int Memory::Compare(const void* buffer1, const void* buffer2, size_t size) {
+    return memcmp(buffer1, buffer2, size);
 }
 
 }  // namespace pulsar

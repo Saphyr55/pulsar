@@ -6,11 +6,9 @@ class Engine {
 public:
     static Engine& Get();
 
-    bool Run();
-
+    bool Init();
+    
     bool Shutdown();
-
-    bool Startup();
 };
 
 }  //namespace pulsar

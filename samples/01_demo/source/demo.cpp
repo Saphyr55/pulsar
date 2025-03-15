@@ -1,5 +1,4 @@
 #include <defines.hpp>
-#include <main/main.hpp>
 #include <memory/memory.hpp>
 #include <memory/memory_trace.hpp>
 #include <memory/shared_ref.hpp>
@@ -11,17 +10,18 @@
 #include <io/file_system.hpp>
 #include <module/module.hpp>
 #include <module/module_registry.hpp>
+#include <string/format.hpp>
 
 using namespace pulsar;
 
 class DemoModule : public Module {
 public:
     virtual void Startup() override {
-        Console::WriteLine("Startup demo module.");
+        PrintLine("Startup demo module.");
     }
     
     virtual void Shutdown() override {
-        Console::WriteLine("Shutdown demo module.");
+        PrintLine(VFormat("Shutdown %s.", "DemoModule"));
     }
 
     virtual ~DemoModule() override {}

@@ -11,24 +11,25 @@
  * @param size The size of the memory block to allocate, in bytes.
  * @return A pointer to the allocated memory block.
  */
- void* operator new(size_t size);
+void* operator new(size_t size);
 
- /**
-  * @brief Overloads the global `new` operator to allocate memory using a custom allocator.
-  *
-  * @param size The size of the memory block to allocate, in bytes.
-  * @param alloc A function pointer to the custom allocator.
-  * @return A pointer to the allocated memory block.
-  */
- void* operator new(size_t size, void* (*alloc)(size_t size));
- 
- /**
-  * @brief Overloads the global `delete` operator to deallocate memory.
-  *
-  * @param resource A pointer to the memory block to deallocate.
-  * @param size The size of the memory block, in bytes.
-  */
- void operator delete(void* resource, size_t size);
+/**
+ * @brief Overloads the global `new` operator to allocate memory using a custom allocator.
+ *
+ * @param size The size of the memory block to allocate, in bytes.
+ * @param alloc A function pointer to the custom allocator.
+ * @return A pointer to the allocated memory block.
+ */
+void* operator new(size_t size, void* (*alloc)(size_t size));
+
+/**
+ * @brief Overloads the global `delete` operator to deallocate memory.
+ *
+ * @param resource A pointer to the memory block to deallocate.
+ * @param size The size of the memory block, in bytes.
+ */
+void operator delete(void* resource, size_t size);
+
 
 namespace pulsar {
 
@@ -81,17 +82,31 @@ public:
     PULSAR_CORE_API static void* Copy(void* destination,
                                       const void* source,
                                       size_t size);
+        
+    PULSAR_CORE_API static void* CopyMove(void* destination,
+                                          const void* source,
+                                          size_t size);
+
+    PULSAR_CORE_API static int Compare(const void* buffer1, const void* buffer2, size_t size);
 };
-
-    template <typename T>
-    T* newobj(auto&& ...args) {
-        return ::new T(std::forward<decltype(args)>(args)...); 
-    }
-
-    template<typename T>
-    void delobj(T* obj) {
-        ::delete obj; 
-    }
 
 }  // namespace pulsar
 
+template <typename T>
+T* NewInstance(auto&&... args) {
+    return ::new T(std::forward<decltype(args)>(args)...);
+}
+
+template <typename T>
+void DeleteInstance(T* obj) {
+    ::delete obj;
+}
+
+template <typename T>
+T* NewArray(size_t size) {
+    return ::new T[size];
+}
+
+void DeleteArray(auto* arr) {
+    ::delete[] arr;
+}

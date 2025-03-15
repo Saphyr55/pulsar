@@ -1,32 +1,31 @@
 #pragma once
 
 #include "collection/hash_map.hpp"
-#include "memory/shared_ref.hpp"
 #include "module/module.hpp"
 #include "runtime_exports.hpp"
+#include "string/string.hpp"
 #include "string/string_ref.hpp"
 
 namespace pulsar {
 
 class PULSAR_RUNTIME_API ModuleRegistry {
 public:
-    using Registry = HashMap<const char*, Module*>;
+    using Registry = HashMap<String, Module*>;
     using Entry = Registry::EntryType;
 
 public:
     static ModuleRegistry& Get();
 
-    void AddModule(const char* module_name, Module* module);
+    void AddModule(StringRef module_name, Module* module);
 
-    inline HashMap<const char*, Module*>& GetModules() {
+    inline Registry& GetModules() {
         return modules_;
     }
 
-    ModuleRegistry() : modules_(8) {
-    }
+    ModuleRegistry()
+        : modules_(20) {}
 
-    ~ModuleRegistry() {
-    }
+    ~ModuleRegistry();
 
 private:
     Registry modules_;
@@ -35,6 +34,6 @@ private:
 }  //namespace pulsar
 
 #define PULSAR_ADD_MODULE(NAME, TYPE) static std::nullptr_t _g_module__##__COUNTER__ = []() -> std::nullptr_t { \
-    ::pulsar::ModuleRegistry::Get().AddModule(NAME, ::pulsar::newobj<TYPE>());                                  \
+    ::pulsar::ModuleRegistry::Get().AddModule(NAME, NewInstance<TYPE>());                             \
     return nullptr;                                                                                             \
 }();

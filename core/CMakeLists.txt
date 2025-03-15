@@ -7,7 +7,7 @@ file(GLOB_RECURSE sources
     "./source/**.cpp"
     "./source/**.inl")
 
-add_library(${target_core})
+add_library(${target_core} SHARED)
 
 target_sources(${target_core} PRIVATE ${sources})
 target_include_directories(${target_core} PUBLIC ${incdir})

@@ -9,8 +9,8 @@ out/
 .vscode/
 *.code-workspace
 
-# Clangd
-.clangd
+
+# Clangd cache
 .cache/
 
 # Python virtual environment

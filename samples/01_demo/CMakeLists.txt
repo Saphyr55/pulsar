@@ -8,7 +8,12 @@ file(GLOB_RECURSE sources
     "./source/**.cpp"
     "./source/**.inl")
 
-add_executable(${target})
+if(WIN32)
+    add_executable(${target} WIN32)
+else()
+    add_executable(${target})
+endif(WIN32)
+
 
 target_sources(${target} PRIVATE ${sources})
 target_link_directories(${target} PRIVATE ${incdir})

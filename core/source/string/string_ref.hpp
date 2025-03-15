@@ -2,18 +2,22 @@
 
 #include "string/string.hpp"
 
-#include <memory>
-
 namespace pulsar {
 
 template <typename CharType>
 class StringRefBase {
 public:
     constexpr StringRefBase()
-        : data_(nullptr), size_(0) {}
+        : data_(nullptr)
+        , size_(0) {}
 
     constexpr StringRefBase(const CharType* str)
-        : data_(str), size_(Strlen(str)) {}
+        : data_(str)
+        , size_(Strlen(str)) {}
+
+    constexpr StringRefBase(const String& str)
+        : data_(str.c_str())
+        , size_(str.Size()) {}
 
     constexpr StringRefBase(const StringRefBase& other) = default;
 
@@ -38,11 +42,6 @@ public:
 
     constexpr bool operator==(const CharType* str) const {
         return *this == StringRefBase(str);
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const StringRefBase& view) {
-        os << view.Data();
-        return os;
     }
 
 private:

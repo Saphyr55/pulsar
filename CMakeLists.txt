@@ -30,7 +30,6 @@ add_subdirectory(core)
 add_subdirectory(runtime)
 add_subdirectory(platform)
 add_subdirectory(samples/01_demo)
-add_subdirectory(samples/serializer_demo)
 add_subdirectory(third_party)
 
 add_subdirectory(tests)

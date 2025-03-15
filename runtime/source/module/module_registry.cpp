@@ -1,6 +1,6 @@
 #include "module/module_registry.hpp"
 #include "memory/memory.hpp"
-#include "module_registry.hpp"
+#include "string/string_ref.hpp"
 
 namespace pulsar {
 
@@ -9,8 +9,14 @@ ModuleRegistry& ModuleRegistry::Get() {
     return module_registry;
 }
 
-void ModuleRegistry::AddModule(const char* module_name, Module* module) {
-    modules_.Insert(module_name, module);
+ModuleRegistry::~ModuleRegistry() {
+    for (Entry& entry: modules_) {
+        DeleteInstance(entry.value);
+    }
+}
+
+void ModuleRegistry::AddModule(StringRef module_name, Module* module) {
+    modules_.Insert(module_name.Data(), module);
 }
 
 

@@ -34,6 +34,13 @@ public:
         ++size_;
     }
 
+    template<typename OtherAllocatorType>
+    void AddArray(const Array<ElementType, OtherAllocatorType>& array) {
+        for (auto& element: array) {
+            Add(element);
+        }
+    }
+
     template <typename... Args>
     void Emplace(Args&&... args) {
         if (size_ >= capacity_) {

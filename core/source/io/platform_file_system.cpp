@@ -2,6 +2,7 @@
 #include "io/platform_file_handle.hpp"
 #include "string/string_ref.hpp"
 
+#include <stdio.h>
 #include <sys/stat.h>
 
 namespace pulsar {
@@ -34,7 +35,8 @@ FileOpenError<SharedRef<FileHandle>> PlatformFileSystem::OpenWrite(
     StringRef filepath) const {
     using FileOpenErrorType = FileOpenError<SharedRef<FileHandle>>;
 
-    FILE* stream = fopen(filepath, "wb");
+    FILE* stream;
+    errno_t error = fopen_s(&stream, filepath, "wb");
 
     if (!stream) {
         return FileOpenErrorType::Failure(FileSystemOpenError::UNKNOWN);
@@ -48,8 +50,9 @@ FileOpenError<SharedRef<FileHandle>> PlatformFileSystem::OpenWrite(
 FileOpenError<SharedRef<FileHandle>> PlatformFileSystem::OpenRead(
     StringRef filepath) const {
     using FileOpenErrorType = FileOpenError<SharedRef<FileHandle>>;
-
-    FILE* stream = fopen(filepath, "rb");
+    
+    FILE* stream;
+    errno_t error = fopen_s(&stream, filepath, "rb");
 
     if (!stream) {
         return FileOpenErrorType::Failure(FileSystemOpenError::UNKNOWN);
