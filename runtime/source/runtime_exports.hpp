@@ -2,7 +2,7 @@
 
 #ifdef PULSAR_RUNTIME_MODULE
 
-#ifdef PULSAR_RUNTIME_EXPORT
+#ifdef PULSAR_RUNTIME_EXPORTS
 #ifdef _MSC_VER
 #define PULSAR_RUNTIME_API __declspec(dllexport)
 #else

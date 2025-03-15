@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include "string/string.hpp"
 
 namespace pulsar {
@@ -15,7 +16,8 @@ public:
         : data_(str)
         , size_(Strlen(str)) {}
 
-    constexpr StringRefBase(const String& str) requires std::same_as<CharType, char>
+    constexpr StringRefBase(const String& str) 
+        requires std::same_as<CharType, char>
         : data_(str.Data())
         , size_(str.Size()) {}
 

@@ -13,7 +13,7 @@ target_sources(${target_core} PRIVATE ${sources})
 target_include_directories(${target_core} PUBLIC ${incdir})
 
 target_compile_definitions(${target_core} PRIVATE PULSAR_CORE_MODULE)
-target_compile_definitions(${target_core} PRIVATE PULSAR_CORE_EXPORT)
+target_compile_definitions(${target_core} PRIVATE PULSAR_CORE_EXPORTS)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${sources})
 

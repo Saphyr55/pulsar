@@ -29,7 +29,6 @@ bool Engine::IsRunning() const {
 
 void Engine::Tick() {
     Display::Get().PumpsEvents();
-
     ObjectRegistry::Get().Tick();
 }
 

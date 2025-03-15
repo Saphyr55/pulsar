@@ -52,3 +52,11 @@ void* operator new(size_t size, void* (*alloc)(size_t size)) {
     return alloc(size);
 }
 
+void operator delete(void* resource, size_t size) noexcept {
+    return ::pf::Memory::Free(resource, size);
+}
+
+void operator delete(void* resource, size_t size, void* (*dealloc)(void* resource, size_t size)) noexcept {
+    dealloc(resource, size);
+}
+

@@ -1,6 +1,6 @@
 # 
 set(target demo01)
-set(deps pfcore pfruntime pfplatform)
+set(deps pfcore pfruntime pfplatform pfrenderer_vulkan)
 set(incdir "./source")
 
 file(GLOB_RECURSE sources

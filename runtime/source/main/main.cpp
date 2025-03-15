@@ -7,7 +7,7 @@ using namespace pulsar;
 
 int32_t PulsarMain(int32_t argc, const char** argv) {
     Engine::Get().Init();
-
+    
     while (Engine::Get().IsRunning()) {
         Engine::Get().Tick();
     }

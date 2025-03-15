@@ -5,7 +5,6 @@
 #include "runtime_exports.hpp"
 #include "string/string_ref.hpp"
 
-
 namespace pulsar {
 
 struct PULSAR_RUNTIME_API WindowStatues {
@@ -40,6 +39,8 @@ public:
     virtual bool IsValid(WindowHandle window) = 0;
 
     virtual void PumpsEvents() = 0;
+
+    virtual void* GetNativeWindowHandle(WindowHandle window) = 0;
 
     virtual ~Display() = default;
 };

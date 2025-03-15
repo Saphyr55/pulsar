@@ -2,11 +2,11 @@
 
 namespace pulsar {
 
-s64 PlatformFileHandle::Tell() {
+int64_t PlatformFileHandle::Tell() {
     return ftell(stream_);
 }
 
-bool PlatformFileHandle::Seek(s64 position) {
+bool PlatformFileHandle::Seek(int64_t position) {
     if (fseek(stream_, position, SEEK_SET)) {
         position_ = position;
         return true;
@@ -24,12 +24,12 @@ size_t PlatformFileHandle::Size() {
     return 0;
 }
 
-bool PlatformFileHandle::Write(const u8* buffer, size_t nbytes) {
+bool PlatformFileHandle::Write(const uint8_t* buffer, size_t nbytes) {
     if (!stream_) {
         return false;
     }
 
-    size_t s = std::fwrite(buffer, sizeof(u8), nbytes, stream_);
+    size_t s = std::fwrite(buffer, sizeof(uint8_t), nbytes, stream_);
     if (s != nbytes) {
         return false;
     }
@@ -37,12 +37,12 @@ bool PlatformFileHandle::Write(const u8* buffer, size_t nbytes) {
     return true;
 }
 
-bool PlatformFileHandle::Read(u8* destination, size_t nbytes) {
+bool PlatformFileHandle::Read(uint8_t* destination, size_t nbytes) {
     if (!destination || nbytes == 0) {
         return false;
     }
 
-    size_t bytes_read = std::fread(destination, sizeof(u8), nbytes, stream_);
+    size_t bytes_read = std::fread(destination, sizeof(uint8_t), nbytes, stream_);
     if (bytes_read != nbytes) {
         return false;
     }

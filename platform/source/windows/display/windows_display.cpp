@@ -18,6 +18,11 @@ void WindowsDisplay::RunMessageLoop() const {
     }
 }
 
+void* WindowsDisplay::GetNativeWindowHandle(WindowHandle window) {
+    PCHECK_MSG(IsValid(window), "Invalid window handle.");
+    return reinterpret_cast<void*>(windows_[window]->hwnd);
+}
+
 WindowHandle WindowsDisplay::CreateWindowHandle(const WindowStatues& window_statues) {
     static WindowHandle last_window_handle = MAIN_WINDOW_HANDLE;
 
@@ -26,11 +31,11 @@ WindowHandle WindowsDisplay::CreateWindowHandle(const WindowStatues& window_stat
     wc.style = 0;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
-    wc.hIcon = ::LoadIcon(NULL, IDI_APPLICATION);
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wc.lpszMenuName = NULL;
-    wc.hIconSm = ::LoadIcon(NULL, IDI_APPLICATION);
+    wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = context_->hinstance;
     wc.lpszClassName = g_class_name;

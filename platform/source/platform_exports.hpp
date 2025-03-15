@@ -2,7 +2,7 @@
 
 #ifdef PULSAR_PLATFORM_MODULE
 
-#ifdef PULSAR_PLATFORM_EXPORT
+#ifdef PULSAR_PLATFORM_EXPORTS
 #ifdef _MSC_VER
 #define PULSAR_PLATFORM_API __declspec(dllexport)
 #else

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "io/file_handle.hpp"
-#include "string/string_ref.hpp"
 
 namespace pulsar {
 
@@ -9,13 +8,13 @@ class PlatformFileHandle : public FileHandle {
 public:
     bool Close();
 
-    virtual s64 Tell() override;
+    virtual int64_t Tell() override;
 
-    virtual bool Seek(s64 position) override;
+    virtual bool Seek(int64_t position) override;
 
-    virtual bool Read(u8* destination, size_t nbytes) override;
+    virtual bool Read(uint8_t* destination, size_t nbytes) override;
 
-    virtual bool Write(const u8* source, size_t nbytes) override;
+    virtual bool Write(const uint8_t* source, size_t nbytes) override;
 
     virtual bool Flush() override;
 
@@ -27,7 +26,7 @@ public:
 
 private:
     FILE* stream_;
-    s32 position_;
+    int32_t position_;
 };
 
 }  // namespace pulsar

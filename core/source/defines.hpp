@@ -16,12 +16,26 @@ using s64 = int64_t;
 using f32 = float;
 using f64 = double;
 
+#ifdef _WIN32
+#undef min
+#undef max
+#undef ERROR
+#undef DELETE
+#undef MessageBox
+#undef Error
+#undef OK
+#undef CONNECT_DEFERRED
+#undef MemoryBarrier
+#undef MONO_FONT
+#endif
 
 /**
  * Defines PDEBUG on debugging.
  */
+#ifndef PULSAR_DEBUG
 #if defined(_DEBUG) || defined(DEBUG)
-#define PULSAR_IS_DEBUG
+#define PULSAR_DEBUG
+#endif
 #endif
 
 /**
@@ -36,7 +50,7 @@ using f64 = double;
 /**
  *
  */
-#ifdef PULSAR_IS_DEBUG
+#ifdef PULSAR_DEBUG
 #define PCHECK(expr)   \
     if (!(expr)) {     \
         PDEBUGBREAK(); \
@@ -49,7 +63,7 @@ using f64 = double;
  *
  */
 // TODO: Remove printf() ...
-#ifdef PULSAR_IS_DEBUG
+#ifdef PULSAR_DEBUG
 #define PCHECK_MSG(expr, msg) \
     if (!(expr)) {            \
         ::printf("%s", msg);  \
@@ -73,4 +87,4 @@ using f64 = double;
 #define PNOINLINE
 #endif
 
-#define PDEPRECATED(version, msg)
+#define PDEPRECATED(msg)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "collection/hash_map.hpp"
+#include "memory/allocator.hpp"
 #include "module/module.hpp"
 #include "runtime_exports.hpp"
 #include "string/string.hpp"
@@ -33,7 +34,9 @@ private:
 
 }  //namespace pulsar
 
-#define PULSAR_ADD_MODULE(NAME, TYPE) static std::nullptr_t _g_module__##__COUNTER__ = []() -> std::nullptr_t { \
-    ::pulsar::ModuleRegistry::Get().AddModule(NAME, NewInstance<TYPE>());                             \
-    return nullptr;                                                                                             \
-}();
+#define PULSAR_ADD_MODULE(name, type)                                   \
+    static const type* g_module_##type = []() -> type* {                \
+        type* module_##type = ::NewInstance<type>();                    \
+        ::pulsar::ModuleRegistry::Get().AddModule(name, module_##type); \
+        return module_##type;                                           \
+    }();

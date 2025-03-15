@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <utility>
+#include <functional>
+
 #include "core_exports.hpp"
 #include "defines.hpp"
 
@@ -20,7 +21,7 @@ void* operator new(size_t size);
  * @param alloc A function pointer to the custom allocator.
  * @return A pointer to the allocated memory block.
  */
-void* operator new(size_t size, void* (*alloc)(size_t size));
+void* operator new(size_t size, std::function<void*(size_t size)> alloc);
 
 
 /**
@@ -31,6 +32,7 @@ void* operator new(size_t size, void* (*alloc)(size_t size));
  */
 void operator delete(void* resource, size_t size) noexcept;
 
+void operator delete(void* resource, size_t size, std::function<void(void* resource, size_t size)> dealloc) noexcept;
 
 namespace pulsar {
 
@@ -92,22 +94,3 @@ public:
 };
 
 } // namespace pulsar
-
-template <typename T>
-T* NewInstance(auto&&... args) {
-    return ::new T(std::forward<decltype(args)>(args)...);
-}
-
-template <typename T>
-void DeleteInstance(T* obj) {
-    ::delete obj;
-}
-
-template <typename T>
-T* NewArray(size_t size) {
-    return ::new T[size];
-}
-
-void DeleteArray(auto* arr) {
-    ::delete[] arr;
-}

@@ -11,8 +11,8 @@
 #include <module/module_registry.hpp>
 #include <string/format.hpp>
 #include <trace/trace.hpp>
-#include "display/display.hpp"
-
+#include <display/display.hpp>
+#include <renderer/vulkan/vulkan.hpp>
 
 using namespace pulsar;
 

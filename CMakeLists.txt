@@ -26,10 +26,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Enable export compile command.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+find_package(Vulkan)
+
 add_subdirectory(core)
 add_subdirectory(runtime)
 add_subdirectory(platform)
 add_subdirectory(samples/01_demo)
 add_subdirectory(third_party)
+if (Vulkan_FOUND)
+    add_subdirectory(modules/renderer-vulkan)
+endif()
 
 add_subdirectory(tests)

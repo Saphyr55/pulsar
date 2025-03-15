@@ -4,6 +4,7 @@
 #include "memory/allocator.hpp"
 
 #include <algorithm>
+#include <type_traits>
 
 namespace pulsar {
 
@@ -102,14 +103,12 @@ public:
     }
 
     void Reverse(SizeType capacity) {
-        if (capacity > capacity_) {
-            AllocatorResize(capacity);
-        }
+        AllocatorResize(capacity);
     }
 
     void Shrink() {
         if (size_ < capacity_) {
-            AllocatorResize(size_);
+            Reverse(size_);
         }
     }
 
@@ -120,11 +119,11 @@ public:
         std::swap(allocator_, other.allocator_);
     }
 
-    PINLINE const ElementType* Data() const {
+    const ElementType* Data() const {
         return data_;
     }
 
-    PINLINE ElementType* Data() {
+    ElementType* Data() {
         return data_;
     }
 
@@ -215,27 +214,27 @@ public:
     }
 
 public:
-    constexpr IteratorType begin() noexcept {
+    IteratorType begin() {
         return data_;
     }
 
-    constexpr const IteratorType begin() const noexcept {
+    const IteratorType begin() const {
         return data_;
     }
 
-    constexpr const IteratorType cbegin() const noexcept {
+    const IteratorType cbegin() const {
         return data_;
     }
 
-    constexpr IteratorType end() noexcept {
+    IteratorType end() {
         return data_ + size_;
     }
 
-    constexpr const IteratorType end() const noexcept {
+    const IteratorType end() const {
         return data_ + size_;
     }
 
-    constexpr const IteratorType cend() const noexcept {
+    const IteratorType cend() const {
         return data_ + size_;
     }
 
@@ -255,7 +254,7 @@ private:
         if (new_capacity < size_) {
             size_ = new_capacity;
         }
-
+        
         ElementType* new_data = AllocatorAllocate(new_capacity);
         for (SizeType i = 0; i < size_; ++i) {
             new (new_data + i) ElementType(std::move(data_[i]));
@@ -265,9 +264,17 @@ private:
         if (data_) {
             AllocatorDeallocate(data_, capacity_);
         }
-
+        
         data_ = new_data;
         capacity_ = new_capacity;
+
+        if constexpr (std::is_default_constructible_v<ElementType>) {
+            for (SizeType i = 0; i < capacity_; ++i) {
+                new (data_ + i) ElementType();
+            }
+            size_ = capacity_;
+        }
+
     }
 
     ElementType* AllocatorAllocate(SizeType n) {

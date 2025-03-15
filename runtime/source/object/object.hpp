@@ -5,18 +5,24 @@
 #include "collection/hash_map.hpp"
 #include "memory/allocator.hpp"
 #include "memory/memory.hpp"
+#include "runtime_exports.hpp"
 
 namespace pulsar {
 
 class Object;
 
-class ObjectRegistry {
+class PULSAR_RUNTIME_API ObjectRegistry {
 public:
     using AllocatorType = DefaultAllocator<Object*>;
 
     static ObjectRegistry& Get();
 
-    void Register(Object* object);
+    template <typename T>
+        requires std::derived_from<T, Object>
+    void Register(T* object) {
+        object->memory_size_ = sizeof(T);
+        objects_.Add(object); 
+    }
 
     void Unregister(Object* object);
 
@@ -40,23 +46,27 @@ private:
  * that require regular updates. It provides a single method, Tick(), that  is
  * called once per frame to update the object's state.
  */
-class Object {
+class PULSAR_RUNTIME_API Object {
 public:
     virtual void Tick() {};
-
     virtual ~Object() = default;
+
+private:
+    friend class ObjectRegistry;
+    size_t memory_size_ = sizeof(Object);
 };
 
 }  //namespace pulsar
 
-template <typename T>
-    requires std::derived_from<T, ::pulsar::Object>
-T* NewObject(auto&&... args) {
-
-    // TODO: Use a better allocator for objects.
-    static ::pulsar::DefaultAllocator<T> allocator;
+template <typename ObjectType>
+    requires std::derived_from<ObjectType, ::pulsar::Object>
+ObjectType* NewObject(auto&&... args) {
     
-    T* object = new (&allocator.Allocate) T(std::forward<decltype(args)>(args)...);
-    ::pulsar::ObjectRegistry::Get().Register(object);
+    using RegistryType = ::pulsar::ObjectRegistry;
+    using AllocatorType = ::pulsar::DefaultAllocator<ObjectType>; // TODO: Use a better allocator for objects.
+
+    ObjectType* object = new ObjectType(std::forward<decltype(args)>(args)...);
+    RegistryType::Get().Register<ObjectType>(object);
+    
     return object;
 }

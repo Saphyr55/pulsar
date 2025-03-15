@@ -12,11 +12,11 @@ namespace pulsar {
  * @brief Defines the severity levels for log messages.
  */
 enum class LogSeverity : uint8_t {
-    INFO,
-    WARN,
-    ERROR,
-    FATAL,
-    DEBUG,
+    INFO = 0,
+    WARN = 1,
+    DEBUG = 2,
+    ERROR = 3,
+    FATAL = 4,
 };
 
 /**

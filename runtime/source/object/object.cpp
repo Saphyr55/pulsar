@@ -8,10 +8,6 @@ ObjectRegistry& ObjectRegistry::Get() {
     return registry;
 }
 
-void ObjectRegistry::Register(Object* object) {
-    objects_.Add(object); 
-}
-
 void ObjectRegistry::Unregister(Object* object) {
     objects_.Remove(object);
 }

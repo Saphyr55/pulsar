@@ -15,6 +15,6 @@ target_include_directories(${target_platform} PUBLIC ${incdir})
 target_link_libraries(${target_platform} PUBLIC ${deps_platform})
 
 target_compile_definitions(${target_platform} PRIVATE PULSAR_PLATFORM_MODULE)
-target_compile_definitions(${target_platform} PRIVATE PULSAR_PLATFORM_EXPORT)
+target_compile_definitions(${target_platform} PRIVATE PULSAR_PLATFORM_EXPORTS)
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${sources_platform})

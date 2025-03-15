@@ -275,7 +275,6 @@ public:
         uint32_t index = Hash(key);
 
         ElementType* element = Lookup(index, key);
-        PCHECK(element)
         if (element == nullptr) {
             if constexpr (std::is_default_constructible_v<ValueType>) {
                 return Insert(key, ValueType()).value;

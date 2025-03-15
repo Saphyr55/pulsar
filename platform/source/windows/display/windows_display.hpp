@@ -38,6 +38,8 @@ public:
         RunMessageLoop();
     }
 
+    virtual void* GetNativeWindowHandle(WindowHandle window) override;
+
 private:
     void RunMessageLoop() const;
 
