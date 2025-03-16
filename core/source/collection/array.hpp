@@ -273,6 +273,11 @@ private:
                 new (data_ + i) ElementType();
             }
             size_ = capacity_;
+        } else if constexpr (std::is_pointer_v<ElementType>) {
+            for (SizeType i = 0; i < capacity_; ++i) {
+                new (data_ + i) (ElementType)(nullptr);
+            }
+            size_ = capacity_;
         }
 
     }

@@ -14,7 +14,9 @@ void ObjectRegistry::Unregister(Object* object) {
 
 void ObjectRegistry::Tick() {
     for (Object* object : objects_) {
-        object->Tick();
+        if (object) {
+            object->Tick();
+        }
     }
 }
 

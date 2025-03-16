@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <cstdio>
+#include <iostream>
 
 using u8 = uint8_t;
 using u16 = uint16_t;
@@ -62,12 +62,12 @@ using f64 = double;
 /**
  *
  */
-// TODO: Remove printf() ...
+// TODO: Remove std::cout ...
 #ifdef PULSAR_DEBUG
-#define PCHECK_MSG(expr, msg) \
-    if (!(expr)) {            \
-        ::printf("%s", msg);  \
-        PDEBUGBREAK();        \
+#define PCHECK_MSG(expr, msg)       \
+    if (!(expr)) {                  \
+        ::std::cout << msg << "\n"; \
+        PDEBUGBREAK();              \
     }
 #else
 #define PCHECK_MSG(expr, msg)

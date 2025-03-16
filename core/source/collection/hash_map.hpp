@@ -4,8 +4,10 @@
 #include "hash/hasher.hpp"
 #include "memory/allocator.hpp"
 #include "memory/memory.hpp"
+#include "string/format.hpp"
 
 #include <initializer_list>
+#include <type_traits>
 
 namespace pulsar {
 
@@ -278,8 +280,11 @@ public:
         if (element == nullptr) {
             if constexpr (std::is_default_constructible_v<ValueType>) {
                 return Insert(key, ValueType()).value;
+            } else if constexpr (std::is_pointer_v<ValueType>) {
+                return Insert(key, (ValueType)(nullptr)).value;
             } else {
-                PCHECK_MSG(false, "No default construstor found.");
+                auto name = typeid(ValueType).name();
+                PCHECK_MSG(false, VFormat("No default construstor found for ValueType: %s", name));
             }
         }
 

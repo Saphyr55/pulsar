@@ -53,6 +53,8 @@ public:
 
     explicit operator bool() const { return IsValid(); }
 
+    SharedRef() = default;
+    
     explicit SharedRef(ResourceType* resource)
         : resource_(resource)
         , reference_counter_(NewDefaultReferenceCounter<ResourceType>(resource_)) {
